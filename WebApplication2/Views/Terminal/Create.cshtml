@@ -1,0 +1,63 @@
+﻿@model Diplom_Autentif.Models.Terminal
+
+@{
+    ViewBag.Title = "Добавить терминал";
+}
+
+<h2>Добавить</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Вопросы</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Balance, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Balance, 1, 10, new { @class = " form-control yourCustomClass" })
+                @Html.ValidationMessageFor(model => model.Balance, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Filial_owner, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Filial_owner, 1, 10, new { @class = " form-control yourCustomClass" })
+                @Html.ValidationMessageFor(model => model.Filial_owner, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Добавить" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Вернуться к списку терминалов", "Index")
+</div>
+
+
+
+@Scripts.Render("~/bundles/bootstrap")
+@Scripts.Render("~/bundles/jquery")
+
+<style>
+    .yourCustomClass {
+        min-height: 20%;
+        min-width: 80%;
+    }
+
+    .selectBox {
+        height: 20%;
+        width: 80%;
+    }
+</style>
+

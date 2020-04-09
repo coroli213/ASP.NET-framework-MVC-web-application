@@ -1,0 +1,56 @@
+﻿@model Diplom_Autentif.Models.Bill
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Удалить</h2>
+
+<h3>Уверены что хотите удалить этот счет?</h3>
+<div>
+    <h4>Клиенты</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dd>
+            @Html.DisplayNameFor(model => model.Id)
+        </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Balance)
+        </dd>
+        <dd>
+            @Html.DisplayNameFor(model => model.Bank_owner)
+        </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Cards[0]?.Id)
+        </dd>
+        <dd>
+            @Html.DisplayNameFor(model => model.Operations)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Вернуться к списку клиентов", "Index")
+        </div>
+    }
+</div>
+
+<style>
+    .yourCustomClass {
+        min-height: 20%;
+        min-width: 80%;
+    }
+
+    .selectBox {
+        height: 20%;
+        width: 80%;
+    }
+</style>
+
+
+

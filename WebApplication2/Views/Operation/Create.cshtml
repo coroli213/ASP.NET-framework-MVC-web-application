@@ -1,0 +1,89 @@
+﻿@model Diplom_Autentif.Models.Operation
+
+@{
+    ViewBag.Title = "Добавить операцию";
+}
+
+<h2>Добавить</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Операции</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Type, 1, 10, new { @class = " form-control yourCustomClass" })
+                @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Amount, 1, 10, new { @class = " form-control yourCustomClass" })
+                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+              <div class="form-group">
+            @Html.LabelFor(model => model.Terminal, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.ListBox("terminal", (IEnumerable<SelectListItem>)ViewData["Terminal"], new { Class = "selectBox" })
+                @Html.ValidationMessageFor(model => model.Terminal, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+               <div class="form-group">
+            @Html.LabelFor(model => model.Account_from, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.ListBox("accountfrom", (IEnumerable<SelectListItem>)ViewData["Account_from"], new { Class = "selectBox" })
+                @Html.ValidationMessageFor(model => model.Account_from, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+               <div class="form-group">
+            @Html.LabelFor(model => model.Account_to, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.ListBox("accountto", (IEnumerable<SelectListItem>)ViewData["Account_to"], new { Class = "selectBox" })
+                @Html.ValidationMessageFor(model => model.Account_to, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Добавить" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Вернуться к списку операций", "Index")
+</div>
+
+
+
+@Scripts.Render("~/bundles/bootstrap")
+@Scripts.Render("~/bundles/jquery")
+
+<style>
+    .yourCustomClass {
+        min-height: 20%;
+        min-width: 80%;
+    }
+
+    .selectBox {
+        height: 20%;
+        width: 80%;
+    }
+</style>
+

@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Diplom_Autentif.Models.Operation>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Список операций</h2>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Добавить Операцию", "Create")
+    </p>
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Amount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Terminal)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Account_from)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Account_to)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Terminal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Account_from)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Account_to)
+            </td>
+           @if (User.IsInRole("Admin"))
+            {
+            <td>
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+            }
+        </tr>
+    }
+
+</table>
