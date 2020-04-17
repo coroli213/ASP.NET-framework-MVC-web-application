@@ -80,7 +80,7 @@ namespace WebApplication2.Controllers
         public ActionResult Create()
         {
 
-            ViewData["Terminal"] = new MultiSelectList(db.Terminals, "Id", "Id");
+            ViewData["Terminal"]     = new MultiSelectList(db.Terminals, "Id", "Id");
             ViewData["Account_from"] = new MultiSelectList(db.Bills, "Id", "Id");
             ViewData["Account_to"]   = new MultiSelectList(db.Bills, "Id", "Id");
 
@@ -93,7 +93,7 @@ namespace WebApplication2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Type,Amount,Terminal,Account_to,Account_from")] Operation client,
-            int terminal, int accountto, int? accountfrom)
+                                    int terminal, int accountto, int? accountfrom)
         {
 
             client.Terminal = db.Terminals.Find(terminal);

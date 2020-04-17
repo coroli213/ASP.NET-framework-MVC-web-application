@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebApplication2.Models;
+using System.Net.Mail;
 
 namespace WebApplication2.Controllers
 {
@@ -41,7 +42,7 @@ namespace WebApplication2.Controllers
             }
         }
 
-        public ApplicationUserManager UserManager
+        public ApplicationUserManager   UserManager
         {
             get
             {
@@ -156,57 +157,93 @@ namespace WebApplication2.Controllers
 
                 var user = new ApplicationUser
                 {
-                    Email       = model.Email,
-                    UserName    = model.Email,
-                    First_name  = model.First_name,
+                    Email = model.Email,
+                    ConfirmedEmail = false,
+                    UserName = model.Email,
+                    First_name = model.First_name,
                     Second_name = model.Second_name,
-                    Third_name  = model.Third_name,
+                    Third_name = model.Third_name,
                     DbId = db.GetClientId(model.First_name, model.Second_name, model.Third_name)
                 };
 
                 var result = await UserManager.CreateAsync(user, model.Password);
+
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                    //добавляем роль преподавателя каждому регистрирующемуся
 
-                    if (model.Email.Contains("Admin"))
-                    {
-                        await UserManager.AddToRoleAsync(user.Id, "Admin");
+                    await UserManager.AddToRoleAsync(user.Id, "User");
+
+                    // адрес smtp-сервера, с которого мы и будем отправлять письмо
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    smtp.EnableSsl = true;
+                    smtp.UseDefaultCredentials = true;
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.Port = 587;
+
+                    // логин и пароль
+                    smtp.Credentials = new System.Net.NetworkCredential("maximbukan@gmail.com", "ktybyf1594");
+
+
+                    MailMessage msg = new MailMessage();
+                    msg.From = new MailAddress("maximbukan@gmail.com");
+                    msg.To.Add(new MailAddress(user.Email));
+                    msg.SubjectEncoding = System.Text.Encoding.GetEncoding(1251);
+                    msg.Subject = "Email confirmation";
+                    msg.IsBodyHtml = true;
+                    // текст письма - включаем в него ссылку
+                    msg.Body = string.Format("Для завершения регистрации перейдите по ссылке:" +
+                                    "<a href=\"{0}\" title=\"Подтвердить регистрацию\">{0}</a>",
+                        Url.Action("ConfirmEmail", "Account", new { Token = user.Id, Email = user.Email }, Request.Url.Scheme));
+
+
+                    smtp.Send(msg);
+                    { 
                     }
-                    else
-                    {
-                        await UserManager.AddToRoleAsync(user.Id, "User");
-                    }
-
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
-                    // Дополнительные сведения о включении подтверждения учетной записи и сброса пароля см. на странице https://go.microsoft.com/fwlink/?LinkID=320771.
-                    // Отправка сообщения электронной почты с этой ссылкой
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Подтверждение учетной записи", "Подтвердите вашу учетную запись, щелкнув <a href=\"" + callbackUrl + "\">здесь</a>");
-
                     return RedirectToAction("Index", "Home");
-                }
-                AddErrors(result);
-            }
 
-            // Появление этого сообщения означает наличие ошибки; повторное отображение формы
+                    return RedirectToAction("Confirm", "Account", new { Email = user.Email });
+                }
+                else
+                {
+                    AddErrors(result);
+                }
+            }
             return View(model);
         }
 
-        //
-        // GET: /Account/ConfirmEmail
+
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(string userId, string code)
+        public string Confirm(string Email)
         {
-            if (userId == null || code == null)
+            return "На почтовый адрес " + Email + " Вам высланы дальнейшие" +
+                    "инструкции по завершению регистрации";
+        }
+
+
+        [AllowAnonymous]
+        public async Task<ActionResult> ConfirmEmail(string Token, string Email)
+        {
+            ApplicationUser user = this.UserManager.FindById(Token);
+            if (user != null)
             {
-                return View("Error");
+                if (user.Email == Email)
+                {
+                    user.ConfirmedEmail = true;
+                    await UserManager.UpdateAsync(user);
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    return RedirectToAction("Index", "Home", new { ConfirmedEmail = user.Email });
+                }
+                else
+                {
+                    return RedirectToAction("Confirm", "Account", new { Email = user.Email });
+                }
             }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+            else
+            {
+                return RedirectToAction("Confirm", "Account", new { Email = "" });
+            }
         }
 
         //

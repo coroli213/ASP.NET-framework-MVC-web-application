@@ -26,6 +26,10 @@ namespace WebApplication2.Models
         public string First_name { get; set; }
         public string Second_name { get; set; }
         public string Third_name { get; set; }
+
+        public override string Email { get; set; }
+        public bool ConfirmedEmail { get; set; }
+
         public int DbId { get; set; }
     }
 

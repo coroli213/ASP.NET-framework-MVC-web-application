@@ -14,7 +14,7 @@ namespace WebApplication2.Controllers
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
+        private ApplicationUserManager   _userManager;
 
         public ManageController()
         {
@@ -229,6 +229,7 @@ namespace WebApplication2.Controllers
                 return View(model);
             }
             var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+            
             if (result.Succeeded)
             {
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -238,6 +239,7 @@ namespace WebApplication2.Controllers
                 }
                 return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
             }
+            
             AddErrors(result);
             return View(model);
         }

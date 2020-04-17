@@ -72,6 +72,7 @@ namespace WebApplication2.Controllers
             return View(client);
         }
 
+
         // GET: Questions/Edit/5
         [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
@@ -178,6 +179,8 @@ namespace WebApplication2.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+
 
         protected override void Dispose(bool disposing)
         {
